@@ -12,19 +12,36 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import junit.framework.Assert;
 
 public class PallaviSeleniumTest_Here 
 {
 	public static WebDriver driver;
 	@Given("^the valid credentials for developer portal$")
 	public void the_valid_credentials_for_developer_portal() throws Throwable {
-		System.out.println("hgfhjs");
-		File file = new File("src\\test\\resources\\chromedriver.exe");
-		System.out.println("File exists = "+file.exists());
-		System.setProperty("webdriver.chrome.driver", "src\\test\\resources\\chromedriver.exe");
+		
+			System.setProperty("webdriver.chrome.driver", "src\\test\\resources\\chromedriver.exe");
 		 driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.get("https://developer.here.com/documentation"); 
+	
+	}
+	@Then("^verify that main page is loaded correctly$")
+	public void verify_that_main_page_is_loaded_correctly() throws Throwable {
+		Assert.assertEquals("Documentation, Code Examples and API References - HERE Developer", driver.getTitle());
+		System.out.println("Documentation page title is  : "+driver.getTitle()+"Documentation page is loaded");
+	}
+
+	@Then("^verify that angular is initialised for main page$")
+	public void verify_that_angular_is_initialised_for_main_page() throws Throwable {
+	   WebElement htmlEl = driver.findElement(By.tagName("html"));
+	   // Verify that HTML element is present
+	   Assert.assertNotNull(htmlEl);
+	   // Check that the AngularJS application attribute is defined on the element
+	   String ngAppAttrVal = htmlEl.getAttribute("data-ng-app");
+	   // Verify that the angular app is initialized to "devportal"
+	   Assert.assertEquals("devportal", ngAppAttrVal);
+	   System.out.println("Angular app initialized on the page");
 	}
 
 	@Then("^Validate all internal dcumentation links on that page are loading and they are angular initialized or not$")
@@ -37,7 +54,7 @@ public class PallaviSeleniumTest_Here
 					// System.out.println(ele);
 					// By using "href" attribute, we could get the url of the requried link
 					String url = ele.getAttribute("href");
-					if (url.contains("developer.here.com")) {
+					if (url.contains("developer.here.com/documentation")) {
 						System.out.print("this is internal link::");
 						verifyURL(url);
 					} else if (!url.contains("javascript:void(0)")) {
